@@ -32,11 +32,31 @@ From the menu bar icon you can also:
 
 ## Install
 
-1. Download `MinimalCapture.zip` from the [latest release](../../releases/latest) and unzip it.
-   The app is signed with a Developer ID and notarised by Apple.
-2. Move `MinimalCapture.app` to your Applications folder and open it.
-3. Grant **Screen Recording** when the app asks. If macOS offers *Quit & Reopen*, accept it.
-4. Free up the shortcuts: in **System Settings → Keyboard → Keyboard Shortcuts… → Screenshots**,
+**With Homebrew** (easiest to keep up to date):
+
+```bash
+brew tap glennsheff/tap
+```
+
+```bash
+brew trust glennsheff/tap
+```
+
+```bash
+brew install --cask minimalcapture
+```
+
+`brew trust` is needed on Homebrew 7 and later for any third-party tap. Update later with
+`brew upgrade --cask minimalcapture`.
+
+**Or by hand:** download `MinimalCapture.zip` from the [latest release](../../releases/latest),
+unzip it, and move `MinimalCapture.app` to your Applications folder.
+
+The app is signed with a Developer ID and notarised by Apple. Then:
+
+1. Open MinimalCapture.
+2. Grant **Screen Recording** when the app asks. If macOS offers *Quit & Reopen*, accept it.
+3. Free up the shortcuts: in **System Settings → Keyboard → Keyboard Shortcuts… → Screenshots**,
    untick the built-in ⇧⌘3 and ⇧⌘4 entries. Quit any other screenshot tool that uses them.
 
 Requires macOS 14 or later. Developed and tested on macOS 27 on Apple silicon; the release
