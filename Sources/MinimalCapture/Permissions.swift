@@ -19,8 +19,12 @@ final class OnboardingController: NSObject, NSWindowDelegate {
         }
 
         let view = OnboardingView(
-            request: { CGRequestScreenCaptureAccess() },
-            openSettings: {
+            request: { [weak self] in
+                self?.stepBack()
+                CGRequestScreenCaptureAccess()
+            },
+            openSettings: { [weak self] in
+                self?.stepBack()
                 if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture") {
                     NSWorkspace.shared.open(url)
                 }
@@ -55,7 +59,15 @@ final class OnboardingController: NSObject, NSWindowDelegate {
         self.timer = timer
     }
 
+    /// Once the user has clicked a button, the next thing they need is the macOS prompt or
+    /// System Settings. Stop floating and move behind so this window does not cover them.
+    private func stepBack() {
+        window?.level = .normal
+        window?.orderBack(nil)
+    }
+
     private func bringToFront(_ window: NSWindow) {
+        window.level = .floating
         NSApp.activate(ignoringOtherApps: true)
         window.makeKeyAndOrderFront(nil)
         window.orderFrontRegardless() // shows on top even if activation was refused

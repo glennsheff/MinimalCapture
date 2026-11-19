@@ -16,8 +16,8 @@ if [ "${UNIVERSAL:-0}" = "1" ]; then
     ARCH_FLAGS=(--arch arm64 --arch x86_64)
 fi
 
-swift build -c release "${ARCH_FLAGS[@]}"
-BIN_DIR="$(swift build -c release "${ARCH_FLAGS[@]}" --show-bin-path)"
+swift build -c release ${ARCH_FLAGS[@]+"${ARCH_FLAGS[@]}"}
+BIN_DIR="$(swift build -c release ${ARCH_FLAGS[@]+"${ARCH_FLAGS[@]}"} --show-bin-path)"
 
 APP="$OUT_DIR/MinimalCapture.app"
 rm -rf "$APP"
