@@ -35,19 +35,11 @@ From the menu bar icon you can also:
 **With Homebrew** (easiest to keep up to date):
 
 ```bash
-brew tap glennsheff/tap
+brew tap glennsheff/tap && brew trust glennsheff/tap && brew install --cask minimalcapture
 ```
 
-```bash
-brew trust glennsheff/tap
-```
-
-```bash
-brew install --cask minimalcapture
-```
-
-`brew trust` is needed on Homebrew 7 and later for any third-party tap. Update later with
-`brew upgrade --cask minimalcapture`.
+The `brew trust` part is required by Homebrew 7 and later for any third-party tap; on an older
+Homebrew, leave it out. Update later with `brew upgrade --cask minimalcapture`.
 
 **Or by hand:** download `MinimalCapture.zip` from the [latest release](../../releases/latest),
 unzip it, and move `MinimalCapture.app` to your Applications folder.
