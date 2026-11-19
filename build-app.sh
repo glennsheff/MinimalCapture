@@ -28,7 +28,7 @@ cp Support/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"   # regenerate wi
 
 # Sign with a real identity when one exists so the Screen Recording grant survives rebuilds.
 # Ad-hoc signatures change on every build, and macOS then asks for permission again.
-IDENTITY="${SIGN_IDENTITY:-$(security find-identity -v -p codesigning 2>/dev/null | awk -F'"' '/"/ {print $2; exit}')}"
+IDENTITY="${SIGN_IDENTITY:-$(security find-identity -v -p codesigning 2>/dev/null | awk -F'"' '/Apple Development/ {print $2; found=1; exit} /"/ && !first {first=$2} END {if (!found && first) print first}')}"
 codesign --force --sign "${IDENTITY:--}" "$APP"
 
 if [ "${IDENTITY:--}" = "-" ]; then

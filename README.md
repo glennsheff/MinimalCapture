@@ -33,11 +33,10 @@ From the menu bar icon you can also:
 ## Install
 
 1. Download `MinimalCapture.zip` from the [latest release](../../releases/latest) and unzip it.
+   The app is signed with a Developer ID and notarised by Apple.
 2. Move `MinimalCapture.app` to your Applications folder and open it.
-3. The release build is not notarised by Apple, so macOS will block it the first time.
-   Open **System Settings → Privacy & Security**, scroll down, and click **Open Anyway**.
-4. Grant **Screen Recording** when the app asks. If macOS offers *Quit & Reopen*, accept it.
-5. Free up the shortcuts: in **System Settings → Keyboard → Keyboard Shortcuts… → Screenshots**,
+3. Grant **Screen Recording** when the app asks. If macOS offers *Quit & Reopen*, accept it.
+4. Free up the shortcuts: in **System Settings → Keyboard → Keyboard Shortcuts… → Screenshots**,
    untick the built-in ⇧⌘3 and ⇧⌘4 entries. Quit any other screenshot tool that uses them.
 
 Requires macOS 14 or later. Developed and tested on macOS 27 on Apple silicon; the release
@@ -61,6 +60,10 @@ open build/MinimalCapture.app
 if you have none. With an ad-hoc signature macOS treats every rebuild as a new app and asks for
 Screen Recording again, so a certificate (a free *Apple Development* one from Xcode is enough)
 saves a lot of clicking.
+
+`release.sh` produces the notarised, universal zip attached to releases. It needs a
+*Developer ID Application* certificate and stored notary credentials; see the notes at the top
+of the script.
 
 The icon is drawn in code. To change it, edit `Support/make-icon.swift` and run
 `swift Support/make-icon.swift`.
