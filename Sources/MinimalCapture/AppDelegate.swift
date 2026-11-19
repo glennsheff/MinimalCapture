@@ -10,6 +10,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var overlay: SelectionOverlay?
     private var history: HistoryPanelController?
     private var hotKeysInstalled = false
+    private var historyItem = NSMenuItem()
+    private var historyHotKey: UInt32?
     private var captureInFlight = false
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -32,7 +34,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let menu = NSMenu()
         menu.addItem(menuItem("Capture Full Screen", #selector(captureFullScreen), key: "3"))
         menu.addItem(menuItem("Capture Area", #selector(captureArea), key: "4"))
-        menu.addItem(menuItem("Show History", #selector(toggleHistory), key: "v"))
+        historyItem = menuItem("Show History", #selector(toggleHistory), key: nil)
+        menu.addItem(historyItem)
+        menu.addItem(menuItem("Change History Shortcut…", #selector(changeHistoryShortcut), key: nil))
         menu.addItem(.separator())
         folderLabelItem.isEnabled = false
         menu.addItem(folderLabelItem)
@@ -55,6 +59,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         folderLabelItem.title = "Saving to: \(FileManager.default.displayName(atPath: CaptureStore.directory.path))"
         keepLatestItem.state = CaptureStore.keepOnlyLatest ? .on : .off
         loginItem.state = SMAppService.mainApp.status == .enabled ? .on : .off
+
+        // Show the current history shortcut next to the item. Menu hints only support
+        // single-character keys; anything else goes in the title.
+        let shortcut = HistoryShortcutSetting.current
+        if let shortcut, shortcut.keyName.count == 1 {
+            historyItem.title = "Show History"
+            historyItem.keyEquivalent = shortcut.keyName.lowercased()
+            historyItem.keyEquivalentModifierMask = shortcut.cocoaModifiers
+        } else {
+            historyItem.title = shortcut.map { "Show History (\($0.display))" } ?? "Show History"
+            historyItem.keyEquivalent = ""
+        }
     }
 
     // MARK: - Settings
@@ -71,6 +87,53 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         NSApp.activate()
         if panel.runModal() == .OK, let url = panel.url {
             CaptureStore.directory = url
+        }
+    }
+
+    @objc private func changeHistoryShortcut() {
+        // Release the current shortcut while recording so pressing it reaches the dialog.
+        unregisterHistoryHotKey()
+        let previous = HistoryShortcutSetting.current
+
+        switch ShortcutRecorder.run(current: previous) {
+        case .set(let shortcut):
+            HistoryShortcutSetting.current = shortcut
+        case .turnOff:
+            HistoryShortcutSetting.current = nil
+        case .reset:
+            HistoryShortcutSetting.current = .defaultHistory
+        case .cancel:
+            break
+        }
+
+        if !registerHistoryHotKey(), let rejected = HistoryShortcutSetting.current {
+            // Another app or macOS already owns that combination: go back to the old one.
+            HistoryShortcutSetting.current = previous
+            registerHistoryHotKey()
+            let alert = NSAlert()
+            alert.messageText = "\(rejected.display) is not available"
+            alert.informativeText = "Another app or macOS is already using that shortcut. The history shortcut was left unchanged."
+            NSApp.activate(ignoringOtherApps: true)
+            alert.runModal()
+        }
+    }
+
+    /// Registers the saved history shortcut. Returns false only if the system refused it.
+    @discardableResult
+    private func registerHistoryHotKey() -> Bool {
+        unregisterHistoryHotKey()
+        // Before Screen Recording is granted no hotkeys are live; the setting is still saved.
+        guard hotKeysInstalled, let shortcut = HistoryShortcutSetting.current else { return true }
+        historyHotKey = HotKeyCenter.shared.register(keyCode: shortcut.keyCode, modifiers: shortcut.modifiers) { [weak self] in
+            self?.toggleHistory()
+        }
+        return historyHotKey != nil
+    }
+
+    private func unregisterHistoryHotKey() {
+        if let historyHotKey {
+            HotKeyCenter.shared.unregister(historyHotKey)
+            self.historyHotKey = nil
         }
     }
 
@@ -134,7 +197,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let combo = HotKeyCenter.Modifier.commandShift
         center.register(keyCode: HotKeyCenter.Key.three, modifiers: combo) { [weak self] in self?.captureFullScreen() }
         center.register(keyCode: HotKeyCenter.Key.four, modifiers: combo) { [weak self] in self?.captureArea() }
-        center.register(keyCode: HotKeyCenter.Key.v, modifiers: combo) { [weak self] in self?.toggleHistory() }
+        registerHistoryHotKey()
     }
 
     // MARK: - Actions

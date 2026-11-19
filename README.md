@@ -17,13 +17,15 @@
 |---|---|
 | <kbd>⇧</kbd><kbd>⌘</kbd><kbd>3</kbd> | Capture the whole screen (the display your pointer is on) |
 | <kbd>⇧</kbd><kbd>⌘</kbd><kbd>4</kbd> | Drag to capture an area. <kbd>Esc</kbd>, a right-click or a plain click cancels |
-| <kbd>⇧</kbd><kbd>⌘</kbd><kbd>V</kbd> | Show the last 20 captures. Click one to put it back on the clipboard |
+| <kbd>⇧</kbd><kbd>⌘</kbd><kbd>V</kbd> | Show the last 20 captures. Click one to put it back on the clipboard. This shortcut can be changed or turned off |
 
 Every capture is copied to the clipboard straight away and saved as a PNG named like
 `Capture-2026-11-19-18.39.10.png`.
 
 From the menu bar icon you can also:
 
+- **Change History Shortcut…** — pick a different key combination for the history panel, or
+  turn it off, if ⇧⌘V clashes with a clipboard manager or another app.
 - **Change Save Folder…** — captures go to the Desktop unless you pick somewhere else.
 - **Keep Only Latest 20** — on by default. Older `Capture-*.png` files in the save folder are
   deleted after each capture; nothing else in the folder is ever touched. Turn it off to keep
@@ -70,7 +72,8 @@ To update, download the new release and replace the app.
    sound and a file in your save folder, the built-in shortcuts are still on; see above.
 
 > **Heads-up:** while MinimalCapture is running, ⇧⌘V belongs to it everywhere. Some apps use
-> that shortcut for "Paste and Match Style".
+> that shortcut for "Paste and Match Style", and clipboard managers often want it too. If it
+> gets in the way, choose **Change History Shortcut…** from the menu bar icon.
 
 Developed and tested on macOS 27 on Apple silicon. The release build is universal, but the
 Intel half is untested.
@@ -111,6 +114,7 @@ It is a Swift package with no dependencies and no Xcode project.
 | `CaptureStore.swift` | PNG encoding, file naming, the rolling queue, thumbnails |
 | `Clipboard.swift` | Pasteboard writes |
 | `HistoryPanel.swift` | The floating history panel |
+| `HistoryShortcut.swift` | The configurable history shortcut and its recorder dialog |
 | `Permissions.swift` | Screen Recording onboarding |
 
 A few choices that keep it small and out of the way:
