@@ -32,30 +32,48 @@ From the menu bar icon you can also:
 
 ## Install
 
-**With Homebrew** (easiest to keep up to date):
+Requires macOS 14 or later. The app is signed with a Developer ID and notarised by Apple.
+
+> **Do this first: turn off the built-in screenshot shortcuts.**
+> macOS keeps ⇧⌘3 and ⇧⌘4 for its own screenshot tool, and while it does, MinimalCapture
+> never sees them. Open **System Settings → Keyboard → Keyboard Shortcuts… → Screenshots** and
+> untick:
+>
+> - **Save picture of screen as a file** (⇧⌘3)
+> - **Save picture of selected area as a file** (⇧⌘4)
+>
+> If another screenshot app uses those shortcuts, quit it or change its shortcuts too.
+
+### Option 1: Homebrew
 
 ```bash
 brew tap glennsheff/tap && brew trust glennsheff/tap && brew install --cask minimalcapture
 ```
 
 The `brew trust` part is required by Homebrew 7 and later for any third-party tap; on an older
-Homebrew, leave it out. Update later with `brew upgrade --cask minimalcapture`.
+Homebrew, leave it out.
 
-**Or by hand:** download `MinimalCapture.zip` from the [latest release](../../releases/latest),
-unzip it, and move `MinimalCapture.app` to your Applications folder.
+Update later with `brew upgrade --cask minimalcapture`.
 
-The app is signed with a Developer ID and notarised by Apple. Then:
+### Option 2: Direct download
 
-1. Open MinimalCapture.
+1. Download `MinimalCapture.zip` from the [latest release](../../releases/latest).
+2. Unzip it and move `MinimalCapture.app` to your Applications folder.
+
+To update, download the new release and replace the app.
+
+### First launch
+
+1. Open MinimalCapture. It lives in the menu bar; there is no Dock icon.
 2. Grant **Screen Recording** when the app asks. If macOS offers *Quit & Reopen*, accept it.
-3. Free up the shortcuts: in **System Settings → Keyboard → Keyboard Shortcuts… → Screenshots**,
-   untick the built-in ⇧⌘3 and ⇧⌘4 entries. Quit any other screenshot tool that uses them.
-
-Requires macOS 14 or later. Developed and tested on macOS 27 on Apple silicon; the release
-build is universal, but the Intel half is untested.
+3. Press ⇧⌘3. If the macOS screenshot thumbnail appears instead of MinimalCapture's shutter
+   sound and a file in your save folder, the built-in shortcuts are still on; see above.
 
 > **Heads-up:** while MinimalCapture is running, ⇧⌘V belongs to it everywhere. Some apps use
 > that shortcut for "Paste and Match Style".
+
+Developed and tested on macOS 27 on Apple silicon. The release build is universal, but the
+Intel half is untested.
 
 ## Build from source
 
